@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import store from './store'
 import dispatcher from './dispatcher'
+import { getChangeInputAction,getAddItemAction } from './actionCreator'
 
 export default class Todolist extends Component{
 	constructor(props){
@@ -8,6 +9,7 @@ export default class Todolist extends Component{
 		this.state = store.getState()
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleStoreChange = this.handleStoreChange.bind(this)
+		this.handleAddClick = this.handleAddClick.bind(this)
 		store.addChangeFn(this.handleStoreChange)
 	}
 	render(){
@@ -15,7 +17,7 @@ export default class Todolist extends Component{
 			<div>
 			  <div>
 			   <input value={this.state.inputValue} onChange={this.handleInputChange}/>
-			   <button>提交</button>
+			   <button onClick={this.handleAddClick}>提交</button>
 			  </div>
 			  <ul>
 			    {
@@ -29,13 +31,13 @@ export default class Todolist extends Component{
 	}
 	
 	handleInputChange(e){
-		const action = {
-			type:'change_input_value',
-			value:e.target.value
-		}
-		dispatcher.dispatch(action)
+		dispatcher.dispatch(getChangeInputAction(e.target.value))
 	}
 	handleStoreChange(){
 		this.setState(store.getState())
+	}
+	
+	handleAddClick(){
+		dispatcher.dispatch(getAddItemAction())
 	}
 }

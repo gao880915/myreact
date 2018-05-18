@@ -1,45 +1,39 @@
 import React from 'react'
-import Item from './Item'
+import { CSSTransitionGroup } from 'react-transition-group'
+import './app.css'
 
 export default class App extends React.Component {
   constructor(props) {
 	    super(props)
-	    console.log('constructor')
 	    this.state = {
-	    	message:'hello world',
+	    	items: ['hello', 'world', 'click', 'me']
 	    }
 	    this.handleClick = this.handleClick.bind(this)
   }
-  componentWillMount() {
-  	console.log('componentWillMount')
-  }
   render () {
-  	console.log('render')
+  	const items = this.state.items.map((item, i) => (
+      <div key={item} onClick={() => this.handleRemove(i)}>
+        {item}
+      </div>
+    ));
+    
     return (
-    	<div onClick={this.handleClick}>
-    	{this.state.message}
-    	<Item/>
+    	<div>
+    	  <CSSTransitionGroup
+    	   transitionName="example"
+    	   transitionAppear={true}
+    	   transitionEnterTimeout={500}
+    	   transitionLeaveTimeout={300}>
+    	    {items}
+    	  </CSSTransitionGroup>
+    	  <div onClick={this.handleClick}>toggle</div>
     	</div>
     )
   }
-  componentDidMount(){
-  	console.log('componentDidMount')
-  }
   
-  shouldComponentUpdate(nextProps, nextState){
-  	console.log('shouldComponentUpdate')
-  	return true
-  }
-  
-  componentWillUpdate(){
-  	console.log('componentWillUpdate')
-  }
-   componentDidUpdate(){
-  	console.log('componentDidUpdate')
-  }
   handleClick(){
-	this.setState({
-		message:'Gao'
-	})
+  	this.setState({
+  		show:!this.state.show
+  	})
   }
 }

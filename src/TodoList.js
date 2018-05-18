@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import store from './store'
 import dispatcher from './dispatcher'
-import { getChangeInputAction,getAddItemAction } from './actionCreator'
+import { getChangeInputAction,getAddItemAction,getDeleteItemAction } from './actionCreator'
+import TodoListUI from './TodoListUI'
 
 export default class Todolist extends Component{
 	constructor(props){
@@ -9,35 +10,37 @@ export default class Todolist extends Component{
 		this.state = store.getState()
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleStoreChange = this.handleStoreChange.bind(this)
-		this.handleAddClick = this.handleAddClick.bind(this)
+		this.handleSubmitClick = this.handleSubmitClick.bind(this)
+		this.handleDelete = this.handleDelete.bind(this)
 		store.addChangeFn(this.handleStoreChange)
 	}
 	render(){
+		const { list,inputValue } = this.state
 		return (
-			<div>
-			  <div>
-			   <input value={this.state.inputValue} onChange={this.handleInputChange}/>
-			   <button onClick={this.handleAddClick}>提交</button>
-			  </div>
-			  <ul>
-			    {
-			    	this.state.list.map((value,index)=>{
-			    		return <li key={index}>{value}</li>
-			    	})
-			    }
-			  </ul>
-			</div>
+			<TodoListUI
+			list={list}
+			inputValue={inputValue}
+			handleDelete={this.handleDelete}
+			handleInputChange={this.handleInputChange}
+			handleSubmitClick={this.handleSubmitClick}/>
 		)
 	}
 	
 	handleInputChange(e){
-		dispatcher.dispatch(getChangeInputAction(e.target.value))
+		const action = getChangeInputAction(e.target.value)
+		dispatcher.dispatch(action)
 	}
 	handleStoreChange(){
 		this.setState(store.getState())
 	}
 	
-	handleAddClick(){
-		dispatcher.dispatch(getAddItemAction())
+	handleSubmitClick(){
+		const action = getAddItemAction()
+		dispatcher.dispatch(action)
+	}
+	handleDelete(e){
+		const index = e.target.getAttribute('data-index')
+		const action = getDeleteItemAction(index)
+		dispatcher.dispatch(action)
 	}
 }

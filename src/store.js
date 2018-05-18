@@ -19,6 +19,10 @@ const store = Object.assign({},EventEmitter.prototype,{
 		this.state.list.push(this.state.inputValue)
 		this.state.inputValue = ''
 		this.emit('change')
+	},
+	deleteListItem(value){
+		this.state.list.splice(value,1)
+		this.emit('change')
 	}
 })
 
